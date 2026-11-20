@@ -19,7 +19,7 @@ main{max-width:620px;margin:18px auto;padding:0 14px 36px}.card{background:white
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}.btn{border:0;border-radius:12px;padding:14px 10px;font-size:16px;font-weight:800}.primary{background:var(--blue);color:#fff}.secondary{background:#e5edf8;color:#17477f}
 .note{font-size:12px;line-height:1.6;color:var(--muted);margin:10px 2px}.alert{padding:12px;border-radius:12px;background:#fff5dc;color:#6a4a00;font-size:13px;line-height:1.55;margin-bottom:12px}
 #results{display:none}.table-wrap{width:100%;overflow:visible}table{width:100%;table-layout:fixed;border-collapse:collapse;min-width:0;font-size:12px}th,td{width:25%;padding:7px 3px;border-bottom:1px solid var(--line);text-align:center;white-space:normal;overflow-wrap:anywhere;line-height:1.35}th{background:#edf3fb;color:#193f70;font-size:11px}th:first-child,td:first-child{text-align:left}.blocked{color:#b42318;font-weight:800}.summary{background:#eef5ff;padding:12px;border-radius:12px;margin-top:12px;font-size:14px;line-height:1.6}.form-error{display:none;margin:10px 0 2px;padding:8px 10px;border-radius:8px;background:#fff0f0;color:#b42318;font-size:13px;line-height:1.4;font-weight:600}
-@media(max-width:390px){h1{font-size:22px}.heir{grid-template-columns:20px minmax(0,1fr) 72px 52px;gap:6px}.heir label{font-size:14px}.lock{font-size:12px}.count{font-size:16px}table{font-size:11px}th{font-size:10px}th,td{padding:6px 2px}}
+@media(max-width:390px){h1{font-size:22px}.heir{grid-template-columns:20px minmax(0,1fr) 72px 52px;gap:6px}.heir label{font-size:14px}.lock{font-size:12px}.count{font-size:16px}table{font-size:13px}th{font-size:11px}th,td{padding:7px 2px}}
 
 /* Requested royal-blue regular-weight section labels */
 .special-title{color:#4169E1;font-weight:400}
@@ -54,8 +54,9 @@ th,td{padding:12px 9px}
 /* Keep all four result columns inside the iPhone viewport */
 #results .table-wrap{overflow:visible}
 #results table{width:100%;min-width:0!important;table-layout:fixed}
-#results th,#results td{width:25%;white-space:normal;overflow-wrap:anywhere;padding:6px 2px;font-size:12px}
-#results th{font-size:10px}
+#results th,#results td{width:25%;white-space:normal;overflow-wrap:anywhere;padding:8px 3px;font-size:14px;line-height:1.4}
+#results th{font-size:12px;font-weight:700}
+#results td{font-weight:500}
 .field-title.royal-title{color:#4169E1}
 </style></head>
 <body>
@@ -104,11 +105,24 @@ function calculate(){
    ['husband','wife','mother','father','daughter'].forEach(k=>shares[k]=shares[k]/total);
    remaining=0;
  }
- if(n.son+n.daughter>0){if(n.son){const units=2*n.son+n.daughter;if(remaining>0){shares.son=remaining*2*n.son/units;shares.daughter+=remaining*n.daughter/units;}}}
- else if(n.father){shares.father+=Math.max(0,remaining);remaining=0;}
- else if(n.brother+n.sister){
+ if(n.son>0){
+   const units=2*n.son+n.daughter;
+   if(remaining>0){shares.son=remaining*2*n.son/units;shares.daughter+=remaining*n.daughter/units;}
+ } else if(n.father>0){
+   shares.father+=Math.max(0,remaining);
+   remaining=0;
+ } else if(n.daughter>0&&(n.brother+n.sister)>0){
+   // With daughter(s), full siblings become residuaries (asabah ma'al-ghayr).
+   // A full brother receives twice a full sister's share.
+   const units=2*n.brother+n.sister;
+   if(units>0){
+     shares.brother=Math.max(0,remaining)*(2*n.brother)/units;
+     shares.sister=Math.max(0,remaining)*n.sister/units;
+   }
+ } else if(n.daughter>0){
+   // No son, father or full sibling: daughter's fixed share remains as calculated.
+ } else if(n.brother+n.sister){
    if(n.brother){const units=2*n.brother+n.sister;shares.brother=Math.max(0,remaining)*2*n.brother/units;shares.sister=Math.max(0,remaining)*n.sister/units;}
-   else if(n.daughter){shares.sister=Math.max(0,remaining);}
    else if(n.sister===1){shares.sister=1/2;}else{shares.sister=2/3;}
  }
  // Father blocks siblings; sons block siblings.
