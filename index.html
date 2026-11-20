@@ -18,8 +18,8 @@ main{max-width:620px;margin:18px auto;padding:0 14px 36px}.card{background:white
 .lock[aria-pressed=true]{background:#dce9fb;border-color:#17477f}.heir{display:grid;grid-template-columns:22px minmax(0,1fr) 86px 58px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #edf1f6}.heir:last-child{border:0;padding-bottom:0}.heir input[type=checkbox]{width:19px;height:19px;accent-color:var(--blue)}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}.btn{border:0;border-radius:12px;padding:14px 10px;font-size:16px;font-weight:800}.primary{background:var(--blue);color:#fff}.secondary{background:#e5edf8;color:#17477f}
 .note{font-size:12px;line-height:1.6;color:var(--muted);margin:10px 2px}.alert{padding:12px;border-radius:12px;background:#fff5dc;color:#6a4a00;font-size:13px;line-height:1.55;margin-bottom:12px}
-#results{display:none}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:480px;font-size:13px}th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th{background:#edf3fb;color:#193f70}th:first-child,td:first-child{text-align:left}.blocked{color:#b42318;font-weight:800}.summary{background:#eef5ff;padding:12px;border-radius:12px;margin-top:12px;font-size:14px;line-height:1.6}
-@media(max-width:390px){h1{font-size:22px}.heir{grid-template-columns:20px minmax(0,1fr) 72px 52px;gap:6px}.heir label{font-size:14px}.lock{font-size:12px}.count{font-size:16px}}
+#results{display:none}.table-wrap{width:100%;overflow:visible}table{width:100%;table-layout:fixed;border-collapse:collapse;min-width:0;font-size:12px}th,td{width:25%;padding:7px 3px;border-bottom:1px solid var(--line);text-align:center;white-space:normal;overflow-wrap:anywhere;line-height:1.35}th{background:#edf3fb;color:#193f70;font-size:11px}th:first-child,td:first-child{text-align:left}.blocked{color:#b42318;font-weight:800}.summary{background:#eef5ff;padding:12px;border-radius:12px;margin-top:12px;font-size:14px;line-height:1.6}.form-error{display:none;margin:10px 0 2px;padding:8px 10px;border-radius:8px;background:#fff0f0;color:#b42318;font-size:13px;line-height:1.4;font-weight:600}
+@media(max-width:390px){h1{font-size:22px}.heir{grid-template-columns:20px minmax(0,1fr) 72px 52px;gap:6px}.heir label{font-size:14px}.lock{font-size:12px}.count{font-size:16px}table{font-size:11px}th{font-size:10px}th,td{padding:6px 2px}}
 
 /* Requested royal-blue regular-weight section labels */
 .special-title{color:#4169E1;font-weight:400}
@@ -62,7 +62,7 @@ th,td{padding:12px 9px}
  <div class="row"><label for="estate">মোট সম্পত্তি (একর)</label><input class="count" id="estate" type="number" min="0" step="0.0001" placeholder="0.0000" inputmode="decimal"><button class="lock" data-lock="estate" aria-pressed="false">লক</button></div>
  <p class="note">সম্পত্তির পরিমাণ একরে লিখুন। ফলাফলে একর ৪ ঘর দশমিকসহ দেখানো হবে।</p>
 </section>
-<section class="card"><div class="field-title royal-title">মৃত ব্যক্তির ওয়ারিশের তথ্য</div><div id="heirs"></div>
+<section class="card"><div class="field-title royal-title">মৃত ব্যক্তির ওয়ারিশের তথ্য</div><div id="heirs"></div><div id="formError" class="form-error" role="alert" aria-live="polite"></div>
 <p class="note">প্রতিটি ওয়ারিশের সংখ্যা লিখুন এবং সংশ্লিষ্ট চেকবক্স নির্বাচন করুন। সংখ্যা ০–২০।</p></section>
 <div class="actions"><button class="btn primary" id="calculate">ফলাফল</button><button class="btn secondary" id="reset">পুনরায় করুন</button></div>
 <div id="message" class="alert" role="status">এটি আপনার নির্ধারিত ৯টি শ্রেণির সীমিত হিসাব সহায়ক। অন্য কোনো ওয়ারিশ থাকলে এই ফলাফল দিয়ে চূড়ান্ত সম্পত্তি বণ্টন করবেন না।</div>
@@ -83,8 +83,7 @@ function calculate(){
  if(n.husband&&n.wife)throw Error('একই মৃত ব্যক্তির ক্ষেত্রে স্বামী ও স্ত্রী একসঙ্গে নির্বাচন করা যায় না।');
  const descendants=n.son+n.daughter>0, siblings=n.brother+n.sister;
  // This limited first version deliberately blocks combinations whose detailed Hanafi treatment needs further case-specific validation.
- if((n.sister||n.brother)&&(n.father||n.son)){} 
- if((n.sister||n.brother)&&n.daughter)throw Error('কন্যার সঙ্গে সহোদর ভাই-বোনের আসাবা সংক্রান্ত বিশেষ নিয়ম রয়েছে। নির্ভুলতা নিশ্চিত করতে এই সমন্বয়ের হিসাব আপাতত দেখানো হচ্ছে না।');
+ if((n.sister||n.brother)&&(n.father||n.son))throw Error('পিতা, পুত্র সিলেক্ট করে সহোদর ভাই, বোন সিলেক্ট করা যাবে না!!');
  if(n.mother&&siblings===1&&!descendants)throw Error('একজন মাত্র সহোদর থাকলে মাতার অংশ নির্ধারণে প্রদত্ত সংক্ষিপ্ত নিয়ম যথেষ্ট নয়; বিশেষজ্ঞের যাচাই প্রয়োজন।');
  let shares={husband:0,wife:0,father:0,mother:0,daughter:0,son:0,sister:0,brother:0};
  if(n.husband)shares.husband=descendants?1/4:1/2;
@@ -105,6 +104,7 @@ function calculate(){
  else if(n.father){shares.father+=Math.max(0,remaining);remaining=0;}
  else if(n.brother+n.sister){
    if(n.brother){const units=2*n.brother+n.sister;shares.brother=Math.max(0,remaining)*2*n.brother/units;shares.sister=Math.max(0,remaining)*n.sister/units;}
+   else if(n.daughter){shares.sister=Math.max(0,remaining);}
    else if(n.sister===1){shares.sister=1/2;}else{shares.sister=2/3;}
  }
  // Father blocks siblings; sons block siblings.
@@ -120,7 +120,7 @@ function calculate(){
  document.getElementById('resultSummary').textContent='প্রদর্শিত জমির একক: একর। প্রাপ্ত অংশ ১০০০ ভিত্তিতে দেখানো হয়েছে। অবণ্টিত অবশিষ্ট থাকলে তা কোনো ওয়ারিশকে স্বয়ংক্রিয়ভাবে দেওয়া হয়নি এবং ফলাফলে দেখানো হয়নি।';
  document.getElementById('results').style.display='block';document.getElementById('message').style.display='none';document.getElementById('results').scrollIntoView({behavior:'smooth'});
 }
-document.getElementById('calculate').addEventListener('click',()=>{try{calculate()}catch(e){alert(e.message)}});
-document.getElementById('reset').addEventListener('click',()=>{document.getElementById('estate').value='';document.querySelectorAll('.heir input').forEach(x=>x.value!==undefined?(x.type==='checkbox'?x.checked=false:x.value=''):null);document.querySelectorAll('.lock').forEach(b=>{const el=document.getElementById(b.dataset.lock);el.disabled=false;b.setAttribute('aria-pressed','false');b.textContent='লক'});document.getElementById('results').style.display='none';document.getElementById('message').style.display='block';});
+document.getElementById('calculate').addEventListener('click',()=>{const msg=document.getElementById('formError');msg.style.display='none';msg.textContent='';try{calculate()}catch(e){msg.textContent=e.message;msg.style.display='block';document.getElementById('results').style.display='none';msg.scrollIntoView({behavior:'smooth',block:'nearest'})}});
+document.getElementById('reset').addEventListener('click',()=>{document.getElementById('estate').value='';document.querySelectorAll('.heir input').forEach(x=>x.value!==undefined?(x.type==='checkbox'?x.checked=false:x.value=''):null);document.querySelectorAll('.lock').forEach(b=>{const el=document.getElementById(b.dataset.lock);el.disabled=false;b.setAttribute('aria-pressed','false');b.textContent='লক'});document.getElementById('results').style.display='none';document.getElementById('formError').style.display='none';document.getElementById('formError').textContent='';document.getElementById('message').style.display='block';});
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 </script></body></html>
