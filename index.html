@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#123b78"><meta name="description" content="৯টি নির্ধারিত ওয়ারিশের জন্য হানাফি ফরায়েজভিত্তিক হিসাব সহায়ক">
+<link rel="manifest" href="manifest.json">
+<title>ওয়ারিশ সম্পত্তির হিসাব</title>
+<style>
+:root{--blue:#123b78;--blue2:#1e5aa6;--gold:#ffe36e;--ink:#182235;--muted:#65738a;--line:#dce4ef;--bg:#f3f6fb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans Bengali","Noto Sans",Arial,sans-serif}
+header{background:linear-gradient(135deg,var(--blue),var(--blue2));color:white;text-align:center;padding:24px 16px 22px;border-radius:0 0 22px 22px;box-shadow:0 5px 18px #163b7026}
+h1{font-size:25px;margin:0 0 7px;font-weight:800}header p{margin:0;color:var(--gold);font-size:15px;font-weight:600}
+main{max-width:620px;margin:18px auto;padding:0 14px 36px}.card{background:white;border:1px solid var(--line);border-radius:17px;padding:16px;margin-bottom:13px;box-shadow:0 4px 15px #1b37610b}
+.field-title{font-size:16px;font-weight:750;margin:0 0 10px}.row{display:grid;grid-template-columns:minmax(0,1fr) 86px 58px;gap:8px;align-items:center}
+.row label{font-weight:650;font-size:15px}.count{width:100%;min-width:0;padding:11px 7px;border:1px solid #cbd6e5;border-radius:10px;font-size:17px;text-align:center;background:#fff;color:var(--ink)}
+.lock{border:1px solid #b8c8dc;border-radius:10px;background:#eef4fc;color:#17477f;padding:10px 5px;font-weight:700;font-size:13px}
+.lock[aria-pressed=true]{background:#dce9fb;border-color:#17477f}.heir{display:grid;grid-template-columns:22px minmax(0,1fr) 86px 58px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #edf1f6}.heir:last-child{border:0;padding-bottom:0}.heir input[type=checkbox]{width:19px;height:19px;accent-color:var(--blue)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}.btn{border:0;border-radius:12px;padding:14px 10px;font-size:16px;font-weight:800}.primary{background:var(--blue);color:#fff}.secondary{background:#e5edf8;color:#17477f}
+.note{font-size:12px;line-height:1.6;color:var(--muted);margin:10px 2px}.alert{padding:12px;border-radius:12px;background:#fff5dc;color:#6a4a00;font-size:13px;line-height:1.55;margin-bottom:12px}
+#results{display:none}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:480px;font-size:13px}th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th{background:#edf3fb;color:#193f70}th:first-child,td:first-child{text-align:left}.blocked{color:#b42318;font-weight:800}.summary{background:#eef5ff;padding:12px;border-radius:12px;margin-top:12px;font-size:14px;line-height:1.6}
+@media(max-width:390px){h1{font-size:22px}.heir{grid-template-columns:20px minmax(0,1fr) 72px 52px;gap:6px}.heir label{font-size:14px}.lock{font-size:12px}.count{font-size:16px}}
+</style></head>
+<body>
+<header><h1>ওয়ারিশ সম্পত্তির হিসাব</h1><p>মুসলিম ফরায়েজ অনুযায়ী সম্পত্তির ভাগ-বন্টন</p></header>
+<main>
+<section class="card">
+ <div class="field-title">মৃত ব্যক্তির মোট সম্পত্তি</div>
+ <div class="row"><label for="estate">মোট সম্পত্তি (একর)</label><input class="count" id="estate" type="number" min="0" step="0.0001" placeholder="0.0000" inputmode="decimal"><button class="lock" data-lock="estate" aria-pressed="false">লক</button></div>
+ <p class="note">সম্পত্তির পরিমাণ একরে লিখুন। ফলাফলে একর ৪ ঘর দশমিকসহ দেখানো হবে।</p>
+</section>
+<section class="card"><div class="field-title">ওয়ারিশের তথ্য</div><div id="heirs"></div>
+<p class="note">প্রতিটি ওয়ারিশের সংখ্যা লিখুন এবং সংশ্লিষ্ট চেকবক্স নির্বাচন করুন। সংখ্যা ০–২০।</p></section>
+<div class="actions"><button class="btn primary" id="calculate">ফলাফল</button><button class="btn secondary" id="reset">পুনরায় করুন</button></div>
+<div id="message" class="alert" role="status">এটি আপনার নির্ধারিত ৯টি শ্রেণির সীমিত হিসাব সহায়ক। অন্য কোনো ওয়ারিশ থাকলে এই ফলাফল দিয়ে চূড়ান্ত সম্পত্তি বণ্টন করবেন না।</div>
+<section id="results" class="card"><div class="field-title">সম্পত্তি বণ্টনের ফলাফল</div><div class="table-wrap"><table><thead><tr><th>ওয়ারিশের নাম</th><th>ওয়ারিশের সংখ্যা</th><th>প্রাপ্ত অংশ (১০০০ ভিত্তিক)</th><th>প্রাপ্ত জমি (একর)</th></tr></thead><tbody id="resultRows"></tbody></table></div><div class="summary" id="resultSummary"></div></section>
+<p class="note">গুরুত্বপূর্ণ: জটিল বা মতভেদপূর্ণ পরিস্থিতিতে অ্যাপ হিসাব আটকে সতর্ক করবে। বাস্তব বণ্টনের আগে যোগ্য ফরায়েজ বিশেষজ্ঞের যাচাই নিন।</p>
+</main>
+<script>
+const heirs=[["husband","স্বামী"],["wife","স্ত্রী"],["father","পিতা"],["mother","মাতা"],["daughter","কন্যা"],["son","পুত্র"],["sister","সহোদর বোন"],["brother","সহোদর ভাই"]];
+const host=document.getElementById('heirs');
+heirs.forEach(([id,name])=>{const d=document.createElement('div');d.className='heir';d.innerHTML='<input type="checkbox" id="check-'+id+'"><label for="count-'+id+'">'+name+'</label><input class="count" id="count-'+id+'" type="number" min="0" max="20" step="1" placeholder="০" inputmode="numeric"><button class="lock" data-lock="count-'+id+'" aria-pressed="false">লক</button>';host.appendChild(d)});
+document.querySelectorAll('.lock').forEach(b=>b.addEventListener('click',()=>{const el=document.getElementById(b.dataset.lock);el.disabled=!el.disabled;b.setAttribute('aria-pressed',String(el.disabled));b.textContent=el.disabled?'লকড':'লক'}));
+function val(id){return Number(document.getElementById('count-'+id).value||0)}
+function frac(x){return x}
+function calculate(){
+ const estate=Number(document.getElementById('estate').value);
+ if(!(estate>0)){alert('মৃত ব্যক্তির মোট সম্পত্তির পরিমাণ লিখুন।');return}
+ const n={};heirs.forEach(([id])=>{n[id]=val(id);const checked=document.getElementById('check-'+id).checked;if(n[id]<0||n[id]>20||!Number.isInteger(n[id]))throw Error('প্রত্যেক ওয়ারিশের সংখ্যা ০ থেকে ২০-এর পূর্ণসংখ্যা হতে হবে।');if(checked&&n[id]===0)throw Error('নির্বাচিত ওয়ারিশের সংখ্যা ১ বা তার বেশি দিন।');if(!checked&&n[id]>0)throw Error('যে ওয়ারিশের সংখ্যা লিখেছেন, তার চেকবক্সও নির্বাচন করুন।')});
+ if(n.husband&&n.wife)throw Error('একই মৃত ব্যক্তির ক্ষেত্রে স্বামী ও স্ত্রী একসঙ্গে নির্বাচন করা যায় না।');
+ const descendants=n.son+n.daughter>0, siblings=n.brother+n.sister;
+ // This limited first version deliberately blocks combinations whose detailed Hanafi treatment needs further case-specific validation.
+ if((n.sister||n.brother)&&(n.father||n.son)){} 
+ if((n.sister||n.brother)&&n.daughter)throw Error('কন্যার সঙ্গে সহোদর ভাই-বোনের আসাবা সংক্রান্ত বিশেষ নিয়ম রয়েছে। নির্ভুলতা নিশ্চিত করতে এই সমন্বয়ের হিসাব আপাতত দেখানো হচ্ছে না।');
+ if(n.mother&&siblings===1&&!descendants)throw Error('একজন মাত্র সহোদর থাকলে মাতার অংশ নির্ধারণে প্রদত্ত সংক্ষিপ্ত নিয়ম যথেষ্ট নয়; বিশেষজ্ঞের যাচাই প্রয়োজন।');
+ let shares={husband:0,wife:0,father:0,mother:0,daughter:0,son:0,sister:0,brother:0};
+ if(n.husband)shares.husband=descendants?1/4:1/2;
+ if(n.wife)shares.wife=descendants?1/8:1/4;
+ if(n.mother){if(descendants||siblings>=2)shares.mother=1/6;else if(n.father&&(n.husband||n.wife)){const spouse=shares.husband||shares.wife;shares.mother=(1-spouse)/3;}else shares.mother=1/3;}
+ let fixed=shares.husband+shares.wife+shares.mother;
+ if(n.father&&n.son)shares.father=1/6;
+ if(n.daughter&&!n.son)shares.daughter=n.daughter===1?1/2:2/3;
+ if(n.father&&!n.son&&n.daughter){shares.father=1/6;fixed+=shares.father;}
+ // Sons/daughters share any residue as 2:1; father is residuary if there are daughters but no sons.
+ let remaining=1-(shares.husband+shares.wife+shares.mother+shares.father+shares.daughter);
+ if(remaining < -1e-9){ // proportionate reduction (awl)
+   const total=shares.husband+shares.wife+shares.mother+shares.father+shares.daughter;
+   ['husband','wife','mother','father','daughter'].forEach(k=>shares[k]=shares[k]/total);
+   remaining=0;
+ }
+ if(n.son+n.daughter>0){if(n.son){const units=2*n.son+n.daughter;if(remaining>0){shares.son=remaining*2*n.son/units;shares.daughter+=remaining*n.daughter/units;}}}
+ else if(n.father){shares.father+=Math.max(0,remaining);remaining=0;}
+ else if(n.brother+n.sister){
+   if(n.brother){const units=2*n.brother+n.sister;shares.brother=Math.max(0,remaining)*2*n.brother/units;shares.sister=Math.max(0,remaining)*n.sister/units;}
+   else if(n.sister===1){shares.sister=1/2;}else{shares.sister=2/3;}
+ }
+ // Father blocks siblings; sons block siblings.
+ if(n.father||n.son){shares.sister=0;shares.brother=0}
+ // Individual display in hundredth share-units; balance rounding only if all 1000 units are allocated.
+ const exactTotal=Object.values(shares).reduce((a,b)=>a+b,0);
+ const entries=[];
+ for(const [id,name] of heirs){if(!n[id])continue;let per=shares[id]/n[id];for(let i=1;i<=n[id];i++){entries.push({id,name:name+(n[id]>1?'-'+i:''),count:n[id],raw:per*1000,acre:estate*per,blocked:per<=1e-10})}}
+ const active=entries.filter(x=>!x.blocked);let cents=active.map(x=>Math.round(x.raw*100));const sumC=cents.reduce((a,b)=>a+b,0);const exactShareTotal=exactTotal*1000;
+ if(Math.abs(exactShareTotal-1000)<1e-7&&cents.length){let diff=100000-sumC;const order=active.map((x,i)=>({i,rem:x.raw*100-Math.floor(x.raw*100)})).sort((a,b)=>b.rem-a.rem);let j=0;while(diff!==0&&j<order.length){const ix=order[j++].i;cents[ix]+=diff>0?1:-1;diff+=diff>0?-1:1}}
+ let ai=0;const rows=entries.map(x=>{const part=x.blocked?'বঞ্চিত':(cents[ai++]/100).toFixed(2);const acre=x.blocked?'বঞ্চিত':x.acre.toFixed(4);return '<tr><td>'+x.name+'</td><td>১</td><td class="'+(x.blocked?'blocked':'')+'">'+part+'</td><td class="'+(x.blocked?'blocked':'')+'">'+acre+'</td></tr>'}).join('');
+ document.getElementById('resultRows').innerHTML=rows||'<tr><td colspan="4">কোনো ওয়ারিশ নির্বাচন করা হয়নি।</td></tr>';
+ document.getElementById('resultSummary').textContent='প্রদর্শিত জমির একক: একর। প্রাপ্ত অংশ ১০০০ ভিত্তিতে দেখানো হয়েছে। অবণ্টিত অবশিষ্ট থাকলে তা কোনো ওয়ারিশকে স্বয়ংক্রিয়ভাবে দেওয়া হয়নি এবং ফলাফলে দেখানো হয়নি।';
+ document.getElementById('results').style.display='block';document.getElementById('message').style.display='none';document.getElementById('results').scrollIntoView({behavior:'smooth'});
+}
+document.getElementById('calculate').addEventListener('click',()=>{try{calculate()}catch(e){alert(e.message)}});
+document.getElementById('reset').addEventListener('click',()=>{document.getElementById('estate').value='';document.querySelectorAll('.heir input').forEach(x=>x.value!==undefined?(x.type==='checkbox'?x.checked=false:x.value=''):null);document.querySelectorAll('.lock').forEach(b=>{const el=document.getElementById(b.dataset.lock);el.disabled=false;b.setAttribute('aria-pressed','false');b.textContent='লক'});document.getElementById('results').style.display='none';document.getElementById('message').style.display='block';});
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script></body></html>
