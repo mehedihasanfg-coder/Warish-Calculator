@@ -50,8 +50,12 @@ th,td{padding:12px 9px}
  .lock{font-size:14px}
  .count{font-size:18px}
 }
-
-
+ 
+/* Keep all four result columns inside the iPhone viewport */
+#results .table-wrap{overflow:visible}
+#results table{width:100%;min-width:0!important;table-layout:fixed}
+#results th,#results td{width:25%;white-space:normal;overflow-wrap:anywhere;padding:6px 2px;font-size:12px}
+#results th{font-size:10px}
 .field-title.royal-title{color:#4169E1}
 </style></head>
 <body>
