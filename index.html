@@ -47,16 +47,18 @@ th,td{padding:12px 9px}
  .count{font-size:18px}
 }
 
+
+.field-title.royal-title{color:#4169E1}
 </style></head>
 <body>
 <header><h1>ওয়ারিশ সম্পত্তির হিসাব</h1><p>মুসলিম ফরায়েজ অনুযায়ী সম্পত্তির ভাগ-বন্টন</p></header>
 <main>
 <section class="card">
- <div class="field-title">মৃত ব্যক্তির মোট সম্পত্তি</div>
+ <div class="field-title royal-title">মৃত ব্যক্তির মোট সম্পত্তির পরিমাণ</div>
  <div class="row"><label for="estate">মোট সম্পত্তি (একর)</label><input class="count" id="estate" type="number" min="0" step="0.0001" placeholder="0.0000" inputmode="decimal"><button class="lock" data-lock="estate" aria-pressed="false">লক</button></div>
  <p class="note">সম্পত্তির পরিমাণ একরে লিখুন। ফলাফলে একর ৪ ঘর দশমিকসহ দেখানো হবে।</p>
 </section>
-<section class="card"><div class="field-title">ওয়ারিশের তথ্য</div><div id="heirs"></div>
+<section class="card"><div class="field-title royal-title">মৃত ব্যক্তির ওয়ারিশের তথ্য</div><div id="heirs"></div>
 <p class="note">প্রতিটি ওয়ারিশের সংখ্যা লিখুন এবং সংশ্লিষ্ট চেকবক্স নির্বাচন করুন। সংখ্যা ০–২০।</p></section>
 <div class="actions"><button class="btn primary" id="calculate">ফলাফল</button><button class="btn secondary" id="reset">পুনরায় করুন</button></div>
 <div id="message" class="alert" role="status">এটি আপনার নির্ধারিত ৯টি শ্রেণির সীমিত হিসাব সহায়ক। অন্য কোনো ওয়ারিশ থাকলে এই ফলাফল দিয়ে চূড়ান্ত সম্পত্তি বণ্টন করবেন না।</div>
