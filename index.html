@@ -19,6 +19,34 @@ main{max-width:620px;margin:18px auto;padding:0 14px 36px}.card{background:white
 .note{font-size:12px;line-height:1.6;color:var(--muted);margin:10px 2px}.alert{padding:12px;border-radius:12px;background:#fff5dc;color:#6a4a00;font-size:13px;line-height:1.55;margin-bottom:12px}
 #results{display:none}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:480px;font-size:13px}th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th{background:#edf3fb;color:#193f70}th:first-child,td:first-child{text-align:left}.blocked{color:#b42318;font-weight:800}.summary{background:#eef5ff;padding:12px;border-radius:12px;margin-top:12px;font-size:14px;line-height:1.6}
 @media(max-width:390px){h1{font-size:22px}.heir{grid-template-columns:20px minmax(0,1fr) 72px 52px;gap:6px}.heir label{font-size:14px}.lock{font-size:12px}.count{font-size:16px}}
+
+/* Accessibility: larger, easier-to-read text on iPhone */
+body{font-size:18px}
+h1{font-size:29px}
+header p{font-size:17px}
+main{padding-left:16px;padding-right:16px}
+.card{padding:18px}
+.field-title{font-size:20px}
+.row label,.heir label{font-size:18px}
+.count{font-size:19px;padding:13px 8px;min-height:48px}
+.lock{font-size:15px;min-height:46px;padding:11px 5px}
+.heir{padding:13px 0}
+.heir input[type=checkbox]{width:22px;height:22px}
+.btn{font-size:19px;min-height:52px}
+.note{font-size:15px;line-height:1.7}
+.alert{font-size:16px;line-height:1.65}
+table{font-size:15px;min-width:540px}
+th,td{padding:12px 9px}
+.summary{font-size:16px;line-height:1.7}
+@media(max-width:390px){
+ h1{font-size:27px}
+ header p{font-size:16px}
+ .heir{grid-template-columns:24px minmax(0,1fr) 76px 56px;gap:7px}
+ .heir label{font-size:17px}
+ .lock{font-size:14px}
+ .count{font-size:18px}
+}
+
 </style></head>
 <body>
 <header><h1>ওয়ারিশ সম্পত্তির হিসাব</h1><p>মুসলিম ফরায়েজ অনুযায়ী সম্পত্তির ভাগ-বন্টন</p></header>
