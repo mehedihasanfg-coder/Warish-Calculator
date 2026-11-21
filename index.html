@@ -135,7 +135,8 @@ function calculate(){
  for(const [id,name] of heirs){if(!n[id])continue;let per=shares[id]/n[id];for(let i=1;i<=n[id];i++){entries.push({id,name:name+(n[id]>1?'-'+i:''),count:n[id],raw:per*1000,acre:estate*per,blocked:per<=1e-10})}}
  const active=entries.filter(x=>!x.blocked);
  // Largest-remainder rounding: allocate only the rounded-down total, never exceeding 1000.
- const shareRaw=active.map(x=>Math.max(0,x.raw*100));
+ const shareScale=exactTotal>1?1/exactTotal:1;
+ const shareRaw=active.map(x=>Math.max(0,x.raw*100*shareScale));
  const shareFloors=shareRaw.map(Math.floor);
  const shareTarget=Math.floor(Math.min(1000,Math.max(0,exactTotal*1000))*100+1e-8);
  let shareDiff=Math.max(0,shareTarget-shareFloors.reduce((a,b)=>a+b,0));
@@ -143,9 +144,10 @@ function calculate(){
  for(let j=0;j<shareDiff&&j<shareOrder.length;j++)shareFloors[shareOrder[j].i]++;
  active.forEach((x,i)=>x.shareUnits=shareFloors[i]);
  // Acreage is rounded to four decimals; its displayed sum is capped at the estate amount.
- const acreRaw=active.map(x=>Math.max(0,x.acre*10000));
- const acreFloors=acreRaw.map(Math.floor);
  const exactAcreTotal=active.reduce((sum,x)=>sum+x.acre,0);
+ const acreScale=exactAcreTotal>estate&&exactAcreTotal>0?estate/exactAcreTotal:1;
+ const acreRaw=active.map(x=>Math.max(0,x.acre*10000*acreScale));
+ const acreFloors=acreRaw.map(Math.floor);
  const acreTarget=Math.floor(Math.min(estate,Math.max(0,exactAcreTotal))*10000+1e-8);
  let acreDiff=Math.max(0,acreTarget-acreFloors.reduce((a,b)=>a+b,0));
  const acreOrder=acreRaw.map((v,i)=>({i,rem:v-acreFloors[i]})).sort((a,b)=>b.rem-a.rem);
