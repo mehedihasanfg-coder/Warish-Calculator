@@ -57,6 +57,8 @@ th,td{padding:12px 9px}
 #results th,#results td{width:25%;white-space:normal;overflow-wrap:anywhere;padding:8px 3px;font-size:14px;line-height:1.4}
 #results th{font-size:12px;font-weight:700}
 #results td{font-weight:500}
+#results tfoot th{background:#dce9fb;color:#123b78;font-size:14px;font-weight:800;border-top:2px solid #123b78;padding:11px 3px}
+#results tfoot th:nth-child(2),#results tfoot th:nth-child(3){text-align:center}
 .field-title.royal-title{color:#4169E1}
 </style></head>
 <body>
@@ -71,7 +73,7 @@ th,td{padding:12px 9px}
 <p class="note">প্রতিটি ওয়ারিশের সংখ্যা লিখুন এবং সংশ্লিষ্ট চেকবক্স নির্বাচন করুন। সংখ্যা ০–২০।</p></section>
 <div class="actions"><button class="btn primary" id="calculate">ফলাফল</button><button class="btn secondary" id="reset">পুনরায় করুন</button></div>
 <div id="message" class="alert" role="status">এটি আপনার নির্ধারিত ৯টি শ্রেণির সীমিত হিসাব সহায়ক। অন্য কোনো ওয়ারিশ থাকলে এই ফলাফল দিয়ে চূড়ান্ত সম্পত্তি বণ্টন করবেন না।</div>
-<section id="results" class="card"><div class="field-title">সম্পত্তি বণ্টনের ফলাফল</div><div class="table-wrap"><table><thead><tr><th>ওয়ারিশের নাম</th><th>ওয়ারিশের সংখ্যা</th><th>প্রাপ্ত অংশ (১০০০ ভিত্তিক)</th><th>প্রাপ্ত জমি (একর)</th></tr></thead><tbody id="resultRows"></tbody></table></div><div class="summary" id="resultSummary"></div></section>
+<section id="results" class="card"><div class="field-title">সম্পত্তি বণ্টনের ফলাফল</div><div class="table-wrap"><table><thead><tr><th>ওয়ারিশের নাম</th><th>ওয়ারিশের সংখ্যা</th><th>প্রাপ্ত অংশ (১০০০ ভিত্তিক)</th><th>প্রাপ্ত জমি (একর)</th></tr></thead><tbody id="resultRows"></tbody><tfoot id="resultTotals"></tfoot></table></div><div class="summary" id="resultSummary"></div></section>
 <p class="note">গুরুত্বপূর্ণ: জটিল বা মতভেদপূর্ণ পরিস্থিতিতে অ্যাপ হিসাব আটকে সতর্ক করবে। বাস্তব বণ্টনের আগে যোগ্য ফরায়েজ বিশেষজ্ঞের যাচাই নিন।</p>
 </main>
 <script>
@@ -135,6 +137,8 @@ function calculate(){
  if(Math.abs(exactShareTotal-1000)<1e-7&&cents.length){let diff=100000-sumC;const order=active.map((x,i)=>({i,rem:x.raw*100-Math.floor(x.raw*100)})).sort((a,b)=>b.rem-a.rem);let j=0;while(diff!==0&&j<order.length){const ix=order[j++].i;cents[ix]+=diff>0?1:-1;diff+=diff>0?-1:1}}
  let ai=0;const rows=entries.map(x=>{const part=x.blocked?'বঞ্চিত':(cents[ai++]/100).toFixed(2);const acre=x.blocked?'বঞ্চিত':x.acre.toFixed(4);return '<tr><td>'+x.name+'</td><td>১</td><td class="'+(x.blocked?'blocked':'')+'">'+part+'</td><td class="'+(x.blocked?'blocked':'')+'">'+acre+'</td></tr>'}).join('');
  document.getElementById('resultRows').innerHTML=rows||'<tr><td colspan="4">কোনো ওয়ারিশ নির্বাচন করা হয়নি।</td></tr>';
+ const totalAcreUnits=active.reduce((sum,x)=>sum+Math.round(x.acre*10000),0);
+ document.getElementById('resultTotals').innerHTML='<tr class="total-row"><th colspan="2">সর্বমোট</th><th>'+(sumC/100).toFixed(2)+'</th><th>'+(totalAcreUnits/10000).toFixed(4)+'</th></tr>';
  document.getElementById('resultSummary').textContent='প্রদর্শিত জমির একক: একর। প্রাপ্ত অংশ ১০০০ ভিত্তিতে দেখানো হয়েছে। অবণ্টিত অবশিষ্ট থাকলে তা কোনো ওয়ারিশকে স্বয়ংক্রিয়ভাবে দেওয়া হয়নি এবং ফলাফলে দেখানো হয়নি।';
  document.getElementById('results').style.display='block';document.getElementById('message').style.display='none';document.getElementById('results').scrollIntoView({behavior:'smooth'});
 }
